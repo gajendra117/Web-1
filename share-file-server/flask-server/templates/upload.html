@@ -14,7 +14,7 @@
     <body onload="prettyPrint()" style="font-family:verdana">
     <div id="header">
         <div id="header-inner">
-            <div id="title"><a href="/">Coding Note</a></div>
+            <div id="title"><a href="/file">Coding Note</a></div>
             <div id="subtitle">Write the code ,Change the world</div>
         </div>
     </div>
@@ -22,7 +22,7 @@
 <div id="main">
     <div id="main-inner">
     <h2>上传一个附件给我？</h2>
-        <form action="http://127.0.0.1:5002/uploadfile" method="post" enctype="multipart/form-data">
+        <form action="/uploadfile" method="post" enctype="multipart/form-data">
             <input type='text' name='upfilename' value='不支持文件名是中文的文件' /><br>
             <input type="file" name='file' /><br>          
             <input type="submit" value='submit'>
@@ -31,7 +31,7 @@
  <div id="page-content">
      <h2 id="自我介绍">下载一个文件？</h2>
     <ul>
-    <li><a href="http://127.0.0.1:5002/down" target="_blank">看看有什么？</a> </li>
+    <li><a href="/down" target="_blank">看看有什么？</a> </li>
     </ul>
  </div>
 

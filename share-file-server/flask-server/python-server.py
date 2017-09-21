@@ -21,19 +21,24 @@ def insert(user ,idea):
     db.close()
 
 def getfile():
-    path1='/data/app/flask_file_share_app/Web/share-file-server/flask-server/uploadfile'
-    path2='/data/app/flask_file_share_app/Web/share-file-server/flask-server'
+    print (os.getcwd())
+    path1=os.getcwd()+'/uploadfile'
+    path2=os.getcwd()
+    #跳转目录 跳转到下载文件的目录，获得下载文件目录里面的ｌｉｓｔ之后，然后再跳转出来
     os.chdir(path1)
     flist=os.listdir()
     os.chdir(path2)
+    print (os.getcwd())
     return flist
 
 def isHavefile(filename):
-    path1='/data/app/flask_file_share_app/Web/share-file-server/flask-server/uploadfile'
-    path2='/data/app/flask_file_share_app/Web/share-file-server/flask-server'
+    print (os.getcwd())
+    path1=os.getcwd()+'/uploadfile'
+    path2=os.getcwd()
     os.chdir(path1)
     flag=os.path.isfile(filename)
     os.chdir(path2)
+    print (os.getcwd())
     return flag
 
 @app.route('/uploadfile', methods=['POST','get'])
@@ -41,6 +46,15 @@ def upload():
     if request.method=='GET':
         return '<h3>get 222 </h3>'
     if request.method=='POST':
+        """
+        path=os.getcwd()+'/uploadfile'
+        upfilename=request.form['upfilename']
+        f=request.files['file']
+        fname=secure_filename(f.filename)
+        f.save(os.path.join(path,fname))
+        print(upfilename)
+        print(fname)
+        """
         relativepath='./uploadfile/'
         upfilename=request.form['upfilename']
         f=request.files['file']
@@ -48,7 +62,8 @@ def upload():
         f.save(os.path.join(relativepath,fname))
         print(upfilename)
         print(fname)
-        return '<p> port yesh</p>'
+        return render_template('uploadfile_ok.html')
+
 
 #显示上传页面 同时也是主页面
 @app.route('/up', methods=['POST','get'])
@@ -65,7 +80,7 @@ def file():
 #main页面
 @app.route('/')
 def hello():
-    return '<p> port 5002</p>'
+    return '<p> flask run in port 5002 </p>'
 
 #显示下载文件的界面
 @app.route('/down', methods=['GET'])
@@ -88,4 +103,4 @@ def downloadfile():
             abort(404)
 
 if __name__ == '__main__':
-    app.run(debug=True,port=5002)
+    app.run(host='0.0.0.0',debug=True,port=5002)
