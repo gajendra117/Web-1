@@ -1,9 +1,12 @@
 import pymysql
-from flask import Flask, request, render_template,send_from_directory
+from flask import Flask, request, render_template,send_from_directory,url_for
 import os
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+
+
+
 
 
 def insert(user ,idea):
@@ -18,34 +21,22 @@ def insert(user ,idea):
     db.close()
 
 def getfile():
-    path1='/home/zhaozheng/code/python/python web/uploadfile'
-    path2='/home/zhaozheng/code/python/python web'
+    path1='/data/app/flask_file_share_app/Web/share-file-server/flask-server/uploadfile'
+    path2='/data/app/flask_file_share_app/Web/share-file-server/flask-server'
     os.chdir(path1)
     flist=os.listdir()
     os.chdir(path2)
     return flist
 
 def isHavefile(filename):
-    path1='/home/zhaozheng/code/python/python web/uploadfile'
-    path2='/home/zhaozheng/code/python/python web'
+    path1='/data/app/flask_file_share_app/Web/share-file-server/flask-server/uploadfile'
+    path2='/data/app/flask_file_share_app/Web/share-file-server/flask-server'
     os.chdir(path1)
     flag=os.path.isfile(filename)
     os.chdir(path2)
     return flag
 
-
-
-
-
-@app.route('/dosomething', methods=['POST'])
-def dosomething():
-    user=request.form['user']
-    something = request.form['dosomething']
-    insert(user,something)
-    return render_template('1.html')
-
-
-@app.route('/upload', methods=['POST','get'])
+@app.route('/uploadfile', methods=['POST','get'])
 def upload():
     if request.method=='GET':
         return '<h3>get 222 </h3>'
@@ -53,29 +44,38 @@ def upload():
         relativepath='./uploadfile/'
         upfilename=request.form['upfilename']
         f=request.files['file']
-
         fname=secure_filename(f.filename)
         f.save(os.path.join(relativepath,fname))
         print(upfilename)
         print(fname)
-        return render_template('1.html')
+        return '<p> port yesh</p>'
 
-@app.route('/testdown', methods=['GET'])
-def testdown():
-    if request.method=='GET':
-        #if os.path.isfile(filename):
-        filename='read.txt'
-        return send_from_directory('uploadfile',filename,as_attachment=True)
-    else:
-        abort(404)
+#显示上传页面 同时也是主页面
+@app.route('/up', methods=['POST','get'])
+def up():
+    mycss=url_for('static', filename='style.css')
+    return render_template('upload.html',mycss=mycss)
 
-@app.route('/downloadpage', methods=['GET'])
+
+@app.route('/file', methods=['POST','get'])
+def file():
+    mycss=url_for('static', filename='style.css')
+    return render_template('upload.html',mycss=mycss)
+
+#main页面
+@app.route('/')
+def hello():
+    return '<p> port 5002</p>'
+
+#显示下载文件的界面
+@app.route('/down', methods=['GET'])
 def downloadpage():
-    if request.method=='GET':
-        flist=getfile()
-        print (flist)
-        return render_template('downloadpage.html',fl=flist)
+    mycss=url_for('static', filename='style.css')
+    flist=getfile()
+    return render_template('downloadpage.html',mycss=mycss,fl=flist)
 
+
+#下载要下载的文件，要下载的文件是通过get方法来传递的
 @app.route('/downloadfile', methods=['GET'])
 def downloadfile():
     if request.method=='GET':
@@ -87,8 +87,5 @@ def downloadfile():
         else:
             abort(404)
 
-
-
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(debug=True,port=5002)
